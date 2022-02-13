@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,10 +29,5 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/users', function () {
-    $users = User::all();
-
-    return Inertia::render('Users', [
-        'users' => $users,
-    ]);
-})->name('users');
+Route::middleware(['auth:sanctum', 'verified'])
+    ->resource('/dashboard/users', UserController::class);
