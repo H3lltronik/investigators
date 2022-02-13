@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class FinancialController extends Controller
 {
@@ -11,9 +14,14 @@ class FinancialController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        
+        return Inertia::render('Financials/index', [
+            'can' => [
+                'admin.users.create' => Auth::user()->can('admin.users.create'),
+            ],
+        ]);
     }
 
     /**

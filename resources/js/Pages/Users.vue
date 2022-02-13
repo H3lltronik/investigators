@@ -2,12 +2,34 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Users
+                <span>Usuarios</span>
             </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+
+                <div class="flex items-center gap-2 mb-5">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <div class="flex justify-center items-center gap-2">
+                            <span>Nuevo</span>
+                            <PlusIcon class="h-5 w-5"/>
+                        </div>
+                    </button>
+
+                    <el-form :inline="true" class="h-[32px]" :action="route('users.index')">
+                        <el-form-item style="margin: 0;">
+                            <el-input v-model="search" placeholder="Buscar registro" id="search" name="search">
+                                <template #prefix>
+                                    <SearchIcon class="h-4 w-4 m-auto"/>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+
+
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="">
                         <!-- <pre>
@@ -37,12 +59,24 @@
     import { defineComponent } from 'vue'
     import AppLayout from '@/Layouts/AppLayout.vue'
     import Pagination from '@/Components/Pagination'
+    import { PlusIcon, SearchIcon } from '@heroicons/vue/solid'
 
     export default defineComponent({
         components: {
             AppLayout,
             Pagination,
+            PlusIcon,
+            SearchIcon,
         },
-        props: ['users', 'can']
+        props: ['users', 'can'],
+        data () {
+            return {
+                search: '',
+            }
+        },
+        mounted () {
+            const url = new URL( window.location );
+            this.search = url.searchParams.get('search');
+        }
     })
 </script>

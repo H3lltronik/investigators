@@ -25,7 +25,7 @@
                                 <jet-nav-link :href="route('users.index')" :active="route().current('users.index')">
                                     Usuarios
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('users.index')" :active="route().current('users.index')">
+                                <jet-nav-link :href="route('financials.index')" :active="route().current('financials.index')">
                                     Financieras
                                 </jet-nav-link>
                             </div>
