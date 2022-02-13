@@ -23,7 +23,10 @@
                                     Dashboard
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('users.index')" :active="route().current('users.index')">
-                                    Users
+                                    Usuarios
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('users.index')" :active="route().current('users.index')">
+                                    Financieras
                                 </jet-nav-link>
                             </div>
                         </div>

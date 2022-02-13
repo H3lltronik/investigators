@@ -17,7 +17,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        
+        $users = User::orderBy('id', 'desc')->where('email', '!=', 'esau.egs1@gmail.com')->paginate(6);
 
         return Inertia::render('Users', [
             'can' => [
