@@ -9,7 +9,7 @@ class Financial extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'user_id'];
+    protected $fillable = ['name', 'description', 'user_id', 'address', 'bank'];
 
     public function user() {
         return $this->belongsTo(User::class);

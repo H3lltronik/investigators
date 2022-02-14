@@ -11,22 +11,16 @@
 
 
                 <div class="flex items-center gap-2 mb-5">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        <div class="flex justify-center items-center gap-2">
-                            <span>Nuevo</span>
-                            <PlusIcon class="h-5 w-5"/>
-                        </div>
-                    </button>
+                    <Link :href="route('users.create')">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <div class="flex justify-center items-center gap-2">
+                                <span>Nuevo</span>
+                                <PlusIcon class="h-5 w-5"/>
+                            </div>
+                        </button>
+                    </Link>
 
-                    <el-form :inline="true" class="h-[32px]" :action="route('users.index')">
-                        <el-form-item style="margin: 0;">
-                            <el-input v-model="search" placeholder="Buscar registro" id="search" name="search">
-                                <template #prefix>
-                                    <SearchIcon class="h-4 w-4 m-auto"/>
-                                </template>
-                            </el-input>
-                        </el-form-item>
-                    </el-form>
+                    <Search :action="route('users.index')"/>
                 </div>
 
 
@@ -40,8 +34,12 @@
                             <el-table-column prop="email" label="Correo"/>
                             <el-table-column label="Operaciones">
                                 <template #default="scope">
-                                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-                                    <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                    <div class="flex items-center gap-3">
+                                        <Link :href="route('users.show', {id: scope.row.id})">
+                                            <el-button size="small">Edit</el-button>
+                                        </Link>
+                                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                    </div>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -60,23 +58,33 @@
     import AppLayout from '@/Layouts/AppLayout.vue'
     import Pagination from '@/Components/Pagination'
     import { PlusIcon, SearchIcon } from '@heroicons/vue/solid'
+    import Search from '../../Components/Search.vue'
+    import { Head, Link } from '@inertiajs/inertia-vue3';
+    import { Inertia } from '@inertiajs/inertia'
 
     export default defineComponent({
         components: {
             AppLayout,
+            Link,
             Pagination,
+            Search,
             PlusIcon,
-            SearchIcon,
         },
         props: ['users', 'can'],
         data () {
             return {
-                search: '',
             }
         },
         mounted () {
-            const url = new URL( window.location );
-            this.search = url.searchParams.get('search');
+        },
+        methods: {
+            handleDelete (index, row) {
+                console.log(row)
+
+                this.$confirm('¿Esta seguro de eliminar este elemento?').then(() => {
+                    Inertia.delete( route('users.destroy', {id: row.id}) );
+                })
+            }
         }
     })
 </script>

@@ -22,5 +22,14 @@
         @env ('local')
             <script src="http://localhost:3000/browser-sync/browser-sync-client.js"></script>
         @endenv
+
+        @if( session('success') )
+            <script>
+                window.addEventListener('load', function() {
+                    alert("ewe")
+                    window.showNotification('success', 'Hecho', 'aaa' );
+                })
+            </script>
+        @endif
     </body>
 </html>

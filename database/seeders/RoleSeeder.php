@@ -16,7 +16,8 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        $adminRole = Role::create(['name' => 'SUPER ADMIN']);
+        $superAdminRole = Role::create(['name' => 'SUPER ADMIN']);
+        $adminRole = Role::create(['name' => 'role.admin']);
         $clientRole = Role::create(['name' => 'role.client']);
         $promoterRole = Role::create(['name' => 'role.promoter']);
 
@@ -28,6 +29,7 @@ class RoleSeeder extends Seeder
         $clientRole->givePermissionTo($loginPermissions[0]);
 
         foreach ($loginPermissions as $key => $permission) {
+            $permission->assignRole($superAdminRole);
             $permission->assignRole($adminRole);
         }
         
@@ -39,6 +41,7 @@ class RoleSeeder extends Seeder
         $adminUsersPermissions[] = Permission::create(['name' => 'admin.users.delete']);
 
         foreach ($adminUsersPermissions as $key => $permission) {
+            $permission->assignRole($superAdminRole);
             $permission->assignRole($adminRole);
         }
         
@@ -50,6 +53,7 @@ class RoleSeeder extends Seeder
         $adminFinancialPermissions[] = Permission::create(['name' => 'admin.financial.delete']);
 
         foreach ($adminFinancialPermissions as $key => $permission) {
+            $permission->assignRole($superAdminRole);
             $permission->assignRole($adminRole);
         }
     }

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -15,8 +17,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $search = $request->search;
         $users = User::orderBy('id', 'desc')
             ->where('email', '!=', 'esau.egs1@gmail.com')
@@ -24,9 +25,9 @@ class UserController extends Controller
             ->where('email', 'LIKE', "%$search%")
             ->paginate(6);
 
-        return Inertia::render('Users', [
+        return Inertia::render('Users/Users', [
             'can' => [
-                'admin.users.create' => Auth::user()->can('admin.users.create'),
+                'admin.users.create' => Auth::user()->can('admin.users.show'),
             ],
             'users' => $users,
         ]);
@@ -37,9 +38,17 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
+    public function create(Request $request) {
+        $entity = User::find( $request->id );
+        $roles = Role::where('name', '!=', 'SUPER ADMIN')->get();
+
+        return Inertia::render('Users/Create', [
+            'can' => [
+                'admin.users.create' => Auth::user()->can('admin.users.create'),
+            ],
+            'entity' => $entity,
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -48,9 +57,20 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(StoreUserRequest $request) {
+        $entity = User::firstOrCreate(['id' => $request->id]);
+        $entity->name = $request->get('name');
+        $entity->email = $request->get('email');
+        $entity->phone = $request->get('phone');
+        $entity->address = $request->get('address');
+        $entity->password = $request->get('password');
+
+        $entity->save();
+
+        foreach ($request->userRoles as $role) {
+            $entity->assignRole($role);
+        }
+        return redirect()->route('users.index');
     }
 
     /**
@@ -59,9 +79,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show($id) {
+        $entity = User::find($id);
+        $roles = Role::where('name', '!=', 'SUPER ADMIN')->get();
+        $entity['userRoles'] = array_map(function ($role) {
+            return $role['name'];
+        }, $entity->roles->toArray() );
+
+        return Inertia::render('Users/Create', [
+            'can' => [
+                'admin.users.show' => Auth::user()->can('admin.users.show'),
+            ],
+            'entity' => $entity,
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -70,9 +101,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+    public function edit($id, StoreUserRequest $request) {
+        $entity = User::find($id);
+        $entity->name = $request->get('name');
+        $entity->email = $request->get('email');
+        $entity->phone = $request->get('phone');
+        $entity->address = $request->get('address');
+        $entity->password = $request->get('password');
+
+        foreach ($request->roles as $role) {
+            $entity->assignRole($role);
+        }
+
+        return redirect()->route('users.index')->with('success', 'Editado correctamente');
     }
 
     /**
@@ -82,8 +123,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         //
     }
 
@@ -93,8 +133,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy($id) {
+        User::destroy($id);
+
+        return redirect()->route('users.index')->with('success', 'Borrado correctamente');
+
     }
 }

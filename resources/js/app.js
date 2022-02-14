@@ -20,4 +20,7 @@ createInertiaApp({
     },
 });
 
+import { showNotification } from "./Utils/helpers";
+window.showNotification = showNotification;
+
 InertiaProgress.init({ color: '#4B5563' });

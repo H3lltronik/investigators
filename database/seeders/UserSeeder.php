@@ -16,6 +16,8 @@ class UserSeeder extends Seeder {
     public function run() {
         $admin = User::create([
             'name' => 'Super Admin',
+            'phone' => '3317354536',
+            'address' => 'Juan B Berdeja',
             'email' => 'esau.egs1@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$UGUqS1adZtIN5SJbRvhKY.wo3tJwUBxdv9yIaW4EIuPqGmVepLA9m',
@@ -25,6 +27,8 @@ class UserSeeder extends Seeder {
 
         $client = User::create([
             'name' => 'Client',
+            'phone' => '3317354536',
+            'address' => 'Juan B Berdeja',
             'email' => 'client@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$UGUqS1adZtIN5SJbRvhKY.wo3tJwUBxdv9yIaW4EIuPqGmVepLA9m',
@@ -40,6 +44,8 @@ class UserSeeder extends Seeder {
 
         $promoter = User::create([
             'name' => 'Promoter',
+            'phone' => '3317354536',
+            'address' => 'Juan B Berdeja',
             'email' => 'promoter@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$UGUqS1adZtIN5SJbRvhKY.wo3tJwUBxdv9yIaW4EIuPqGmVepLA9m',

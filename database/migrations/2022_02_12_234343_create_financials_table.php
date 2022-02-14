@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->tinyText('description');
+            $table->string('address')->nullable();
+            $table->string('bank')->nullable();
+            $table->tinyText('description')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
         });
     }
