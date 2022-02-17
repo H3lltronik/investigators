@@ -1,5 +1,14 @@
 <template>
     <app-layout>
+
+        <Head>
+            <title>
+                <span v-if="entity">Editar</span>
+                <span v-else>Crear</span>
+                <span> Usuario</span>
+            </title>
+        </Head>
+
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <span v-if="entity">Editar</span>
@@ -102,7 +111,7 @@
     import { defineComponent } from 'vue'
     import { Inertia } from '@inertiajs/inertia'
     import AppLayout from '@/Layouts/AppLayout.vue'
-    import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+    import { Head, Link } from '@inertiajs/inertia-vue3';
     import { SaveAsIcon, PhoneIcon, UserIcon, MailIcon, LockClosedIcon, XIcon } from '@heroicons/vue/solid'
     import { userForm } from '../../Common/rules';
 
@@ -116,6 +125,7 @@
             MailIcon,
             LockClosedIcon,
             UserIcon,
+            Head,
         },
         props: ['entity', 'roles', 'can'],
         data () {

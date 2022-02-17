@@ -21,8 +21,8 @@ class UserController extends Controller
         $search = $request->search;
         $users = User::orderBy('id', 'desc')
             ->where('email', '!=', 'esau.egs1@gmail.com')
-            ->where('name', 'LIKE', "%$search%")
-            ->where('email', 'LIKE', "%$search%")
+            ->orWhere('name', 'LIKE', "%$search%")
+            ->orWhere('email', 'LIKE', "%$search%")
             ->paginate(6);
 
         return Inertia::render('Users/Users', [

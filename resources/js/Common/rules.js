@@ -10,3 +10,12 @@ export const userForm = {
         { required: true, message: 'Este campo es requerido', trigger: 'submit' },
     ],
 }
+
+export const financialsForm = {
+    name: [
+        { required: true, message: 'Este campo es requerido', trigger: 'submit' },
+    ],
+    user_id: [
+        { required: true, message: 'Este campo es requerido', trigger: 'submit' },
+    ],
+}

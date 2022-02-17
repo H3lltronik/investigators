@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('financials', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
-            $table->string('address')->nullable();
-            $table->string('bank')->nullable();
+            $table->string('name')->nullable()->default('');
+            $table->string('address')->nullable()->default('');
+            $table->string('bank')->nullable()->default('');
             $table->tinyText('description')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
         });

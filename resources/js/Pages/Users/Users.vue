@@ -1,5 +1,9 @@
 <template>
     <app-layout>
+        <Head>
+            <title>Usuarios</title>
+        </Head>
+
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <span>Usuarios</span>
@@ -68,6 +72,7 @@
             Link,
             Pagination,
             Search,
+            Head,
             PlusIcon,
         },
         props: ['users', 'can'],
