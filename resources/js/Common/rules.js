@@ -19,9 +19,3 @@ export const financialsForm = {
         { required: true, message: 'Este campo es requerido', trigger: 'submit' },
     ],
 }
-
-export const requestsForm = {
-    name: [
-        { required: true, message: 'Este campo es requerido', trigger: 'submit' },
-    ],
-}

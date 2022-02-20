@@ -6,7 +6,8 @@
             </button>
         </div>
          <div class="basis-1/3 px-3">
-            <el-form-item label="Numbre de empresa o persona fisica" prop="name">
+            <el-form-item label="Numbre de empresa o persona fisica" :prop="`addresses[${id}].name`"
+            :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
                 <el-input v-model="value.name" placeholder="Numbre de empresa o persona fisica" id="name" name="name">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
@@ -15,7 +16,8 @@
             </el-form-item>
         </div>
         <div class="basis-1/3 px-3">
-            <el-form-item label="Ciudad" prop="name">
+            <el-form-item label="Ciudad" :prop="`addresses[${id}].city`"
+            :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
                 <el-input v-model="value.city" placeholder="Ciudad" id="city" name="city">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
@@ -24,7 +26,8 @@
             </el-form-item>
         </div>
         <div class="basis-1/3 px-3">
-            <el-form-item label="Direccion" prop="name">
+            <el-form-item label="Direccion" :prop="`addresses[${id}].address`"
+            :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
                 <el-input v-model="value.address" placeholder="Direccion" id="address" name="address">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
@@ -33,7 +36,8 @@
             </el-form-item>
         </div>
         <div class="basis-1/3 px-3">
-            <el-form-item label="Telefono" prop="name">
+            <el-form-item label="Telefono" :prop="`addresses[${id}].phone`"
+            :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
                 <el-input v-model="value.phone" placeholder="Telefono" id="phone" name="phone">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
@@ -42,12 +46,12 @@
             </el-form-item>
         </div>
         <div class="basis-1/3 px-3">
-            <el-form-item label="Preguntas extendidas" prop="extended">
+            <el-form-item label="Preguntas extendidas" :prop="`addresses[${id}].extended`">
                 <el-checkbox v-model="value.hasExtendedQuestions" @change="toggleExtendedQuestions"></el-checkbox>
             </el-form-item>
         </div>
         <div class="basis-full px-3" >
-            <el-form-item label="Notas" prop="name">
+            <el-form-item label="Notas" :prop="`addresses[${id}].notes`">
                 <el-input type="textarea" v-model="value.notes" placeholder="Notas" id="notes" name="notes">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
@@ -64,14 +68,16 @@
                 </button>
             </div>
             <div class="flex items-center gap-5" v-for="(extendedQuestion, index) in value.extendedQuestions" :key="index">
-                <el-form-item label="Tipo de pregunta" prop="name" class="">
+                <el-form-item label="Tipo de pregunta" :prop="`addresses[${id}].extendedQuestions[${index}].type`" class=""
+                :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
                     <el-radio-group v-model="extendedQuestion.type">
                         <el-radio label="text">Texto</el-radio>
                         <el-radio label="picture">Fotografia</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="Nombre de pregunta" prop="name" class="basis-1/3">
-                    <el-input v-model="extendedQuestion.name" placeholder="Nombre de pregunta" id="name" name="name">
+                <el-form-item label="Nombre de pregunta" :prop="`addresses[${id}].extendedQuestions[${index}].name`" class="basis-1/3"
+                :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
+                    <el-input v-model="extendedQuestion.name" placeholder="Nombre de pregunta">
                         <template #prefix>
                             <UserIcon class="h-4 w-4 m-auto"/>
                         </template>

@@ -55,7 +55,7 @@
                             </Link>
                             <button v-on:click="submitForm" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 <div class="flex justify-center items-center gap-2">
-                                    <span>Guardar</span>
+                                    <span>Solicitar</span>
                                     <SaveAsIcon class="h-5 w-5"/>
                                 </div>
                             </button>
@@ -73,7 +73,6 @@
     import AppLayout from '@/Layouts/AppLayout.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import { SaveAsIcon, OfficeBuildingIcon, UserIcon, PlusIcon, InformationCircleIcon, TrashIcon, XIcon, ClipboardCheckIcon } from '@heroicons/vue/solid'
-    import { requestsForm } from '../../Common/rules';
     import AddressForm from './AddressForm.vue';
 
     export default defineComponent({
@@ -94,7 +93,6 @@
         props: ['entity', 'financials', 'can'],
         data () {
             return {
-                rules: requestsForm,
                 loading: false,
             }
         },

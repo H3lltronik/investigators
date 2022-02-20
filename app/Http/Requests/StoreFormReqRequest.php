@@ -24,11 +24,13 @@ class StoreFormReqRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'address' => 'max:255',
-            'bank' => 'max:255',
-            'description' => 'max:1000',
-            'user_id' => 'required',
+            'addresses' => 'required',
+            'addresses.*.name' => 'required|max:255',
+            'addresses.*.city' => 'required|max:255',
+            'addresses.*.address' => 'required|max:255',
+            'addresses.*.phone' => 'required|max:255',
+            'addresses.*.hasExtendedQuestions' => 'required',
+            'addresses.*.hasExtendedQuestions' => 'sometimes',
         ];
     }
 }

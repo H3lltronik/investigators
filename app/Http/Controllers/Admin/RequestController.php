@@ -64,14 +64,15 @@ class RequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreFormReqRequest $request) {
-        $entity = Financial::firstOrCreate(['id' => $request->id]);
-        $entity->name = $request->get('name');
-        $entity->address = $request->get('address');
-        $entity->bank = $request->get('bank');
-        $entity->description = $request->get('description');
-        $entity->user_id = $request->get('user_id');
+        dump($request);
+        // $entity = Financial::firstOrCreate(['id' => $request->id]);
+        // $entity->name = $request->get('name');
+        // $entity->address = $request->get('address');
+        // $entity->bank = $request->get('bank');
+        // $entity->description = $request->get('description');
+        // $entity->user_id = $request->get('user_id');
 
-        $entity->save();
+        // $entity->save();
         return redirect()->route('requests.index');
     }
 
