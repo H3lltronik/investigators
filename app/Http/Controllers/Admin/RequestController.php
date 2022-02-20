@@ -64,7 +64,7 @@ class RequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreFormReqRequest $request) {
-        dump($request);
+        return dump($request);
         // $entity = Financial::firstOrCreate(['id' => $request->id]);
         // $entity->name = $request->get('name');
         // $entity->address = $request->get('address');
@@ -73,7 +73,7 @@ class RequestController extends Controller
         // $entity->user_id = $request->get('user_id');
 
         // $entity->save();
-        return redirect()->route('requests.index');
+        return redirect()->route('request.index');
     }
 
     /**
@@ -111,7 +111,7 @@ class RequestController extends Controller
 
         $entity->save();
         
-        return redirect()->route('requests.index')->with('success', 'Editado correctamente');
+        return redirect()->route('request.index')->with('success', 'Editado correctamente');
     }
 
     /**

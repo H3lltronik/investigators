@@ -19,12 +19,15 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg" v-loading="loading">
                     <div class="px-4 py-7">
-                        <!-- aber -->
-                        <!-- <pre>
+                        aber
+                        <pre>
+                            {{$page.props.errors}}
+                        </pre>
+                        <pre>
                             {{form}}
-                        </pre> -->
+                        </pre>
 
-                        <el-form ref="form" :rules="rules" :action="route('financials.store')" :model="form" label-position="top" >
+                        <el-form ref="form" :action="route('request.store')" :model="form" label-position="top" >
                             <div class="flex align-center justify-between">
                                 <div class="mb-4 ml-2">Domicilios ligados</div>
 
@@ -45,7 +48,7 @@
                         </el-form>
 
                         <div class="flex justify-end items-center gap-5 mt-5">
-                            <Link :href="route('financials.index')">
+                            <Link :href="route('request.index')">
                                 <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                     <div class="flex justify-center items-center gap-2">
                                         <span>Cancelar</span>
@@ -107,7 +110,8 @@
                     if (isValid) {
                         this.loading = true;
                         
-                        Inertia.post( route('requests.store'), this.form );
+                        Inertia.post( route('request.store'), this.form );
+                        Inertia.on('finish', () => { this.loading = false })
                     }
                 });
             },

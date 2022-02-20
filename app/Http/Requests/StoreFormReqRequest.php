@@ -30,7 +30,7 @@ class StoreFormReqRequest extends FormRequest
             'addresses.*.address' => 'required|max:255',
             'addresses.*.phone' => 'required|max:255',
             'addresses.*.hasExtendedQuestions' => 'required',
-            'addresses.*.hasExtendedQuestions' => 'sometimes',
+            'addresses.*.extendedQuestions' => 'required',
         ];
     }
 }

@@ -149,6 +149,7 @@
                         this.loading = true;
                         
                         Inertia.post( route('users.store'), this.form );
+                        Inertia.on('finish', () => { this.loading = false })
                     }
                 });
             }

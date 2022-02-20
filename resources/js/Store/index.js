@@ -6,12 +6,12 @@ export const store = createStore({
             requestForm: {
                 addresses: [
                     {
-                        name: '',
-                        city: '',
-                        address: '',
-                        phone: '',
-                        hasExtendedQuestions: false,
-                        extendedQuestions: []
+                        name: '1',
+                        city: '2',
+                        address: '3',
+                        phone: '4',
+                        hasExtendedQuestions: true,
+                        
                     },
                 ],
             }
