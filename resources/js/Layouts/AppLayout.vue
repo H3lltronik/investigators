@@ -20,19 +20,16 @@
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    Inicio
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('users.index')" :active="route().current('users.index')">
                                     Usuarios
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('requested.index')" :active="route().current('requested.index')">
+                                <jet-nav-link :href="route('request.index')" :active="route().current('request.index')">
                                     Solicitudes
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('financials.index')" :active="route().current('financials.index')">
                                     Financieras
-                                </jet-nav-link>
-                                <jet-nav-link :href="route('request.index')" :active="route().current('request.index')">
-                                    Solicitar
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -77,10 +74,6 @@
 
                                     <template #content>
                                         <!-- Account Management -->
-                                        <div class="block px-4 py-2 text-xs text-gray-400">
-                                            Manage Account
-                                        </div>
-
                                         <jet-dropdown-link :href="route('profile.show')">
                                             Profile
                                         </jet-dropdown-link>

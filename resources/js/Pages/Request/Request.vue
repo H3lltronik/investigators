@@ -1,12 +1,12 @@
 <template>
     <app-layout>
         <Head>
-            <title>Financieras</title>
+            <title>Solicitudes</title>
         </Head>
 
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <span>Financieras</span>
+                <span>Solicitudes</span>
             </h2>
         </template>
 
@@ -15,7 +15,7 @@
 
 
                 <div class="flex items-center gap-2 mb-5">
-                    <Link :href="route('financials.create')">
+                    <Link :href="route('request.create')">
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             <div class="flex justify-center items-center gap-2">
                                 <span>Nuevo</span>
@@ -24,7 +24,7 @@
                         </button>
                     </Link>
 
-                    <Search :action="route('financials.index')"/>
+                    <Search :action="route('request.index')"/>
                 </div>
 
 
@@ -32,9 +32,9 @@
                     <div class="">
                         <!-- aber
                         <pre>
-                            {{financials.data}}
+                            {{requests.data}}
                         </pre> -->
-                        <el-table :data="financials.data" stripe class="w-full">
+                        <el-table :data="requests.data" stripe class="w-full" v-if="requests">
                             <el-table-column prop="name" label="Nombre" />
                             <el-table-column prop="address" label="Direccion"/>
                             <el-table-column prop="bank" label="Banco"/>
@@ -42,7 +42,7 @@
                             <el-table-column label="Operaciones">
                                 <template #default="scope">
                                     <div class="flex items-center gap-3">
-                                        <Link :href="route('financials.show', {id: scope.row.id})">
+                                        <Link :href="route('request.show', {id: scope.row.id})">
                                             <el-button size="small">Edit</el-button>
                                         </Link>
                                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
@@ -52,7 +52,7 @@
                         </el-table>
                     </div>
                     <div class="p-4">
-                        <pagination class="mt-6" :links="financials.links" />
+                        <pagination class="mt-6" :links="requests.links" />
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
             Head,
             PlusIcon,
         },
-        props: ['financials', 'can'],
+        props: ['requests', 'can'],
         data () {
             return {
             }
@@ -87,10 +87,8 @@
         },
         methods: {
             handleDelete (index, row) {
-                console.log(row)
-
                 this.$confirm('¿Esta seguro de eliminar este elemento?').then(() => {
-                    Inertia.delete( route('financials.destroy', {id: row.id}) );
+                    Inertia.delete( route('request.destroy', {id: row.id}) );
                 })
             }
         }

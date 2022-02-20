@@ -3,9 +3,7 @@
 
         <Head>
             <title>
-                <template v-if="entity">Editar</template>
-                <template v-else>Crear</template>
-                Financiera
+                Formulario Solicitudes
             </title>
         </Head>
 
@@ -13,7 +11,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <span v-if="entity">Editar</span>
                 <span v-else>Crear</span>
-                <span> Financiera</span>
+                <span> Solicitud</span>
             </h2>
         </template>
 
@@ -23,62 +21,27 @@
                     <div class="px-4 py-7">
                         <!-- aber
                         <pre>
-                            {{users}}
+                            {{financials}}
                         </pre> -->
 
                         <el-form ref="form" :rules="rules" :action="route('financials.store')" :model="form" label-position="top" >
-                            <div class="flex flex-wrap">
-                                <div class="basis-1/3 px-3">
-                                    <el-form-item label="Nombre" prop="name">
-                                        <el-input v-model="form.name" placeholder="Nombre" id="name" name="name">
-                                            <template #prefix>
-                                                <UserIcon class="h-4 w-4 m-auto"/>
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                                <div class="basis-1/3 px-3">
-                                    <el-form-item label="Direccion" prop="address">
-                                        <el-input v-model="form.address" placeholder="Direccion" id="address" name="address">
-                                            <template #prefix>
-                                                <ClipboardCheckIcon class="h-4 w-4 m-auto"/>
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                                <div class="basis-1/3 px-3">
-                                    <el-form-item label="Banco" prop="bank">
-                                        <el-input v-model="form.bank" placeholder="Banco" id="bank" name="name">
-                                            <template #prefix>
-                                                <OfficeBuildingIcon class="h-4 w-4 m-auto"/>
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                                <div class="basis-full px-3">
-                                    <el-form-item label="Descripcion" prop="description">
-                                        <el-input type="textarea" rows="10" v-model="form.description" placeholder="Descripcion" id="description" description="name">
-                                            <template #prefix>
-                                                <InformationCircleIcon class="h-4 w-4 m-auto"/>
-                                            </template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
+                            <div class="flex align-center justify-between">
+                                <div class="mb-4 ml-2">Domicilios ligados</div>
 
-                                <div class="basis-full px-3">
-                                    <hr class="my-3">
-
-                                    <div class="">Asignar a usuario</div>
-
-                                    <div class="">
-                                        <el-form-item prop="user_id" class="mt-5" label="Usuario">
-                                            <el-select v-model="form.user_id" id="user_id" name="user_id" class="m-2" placeholder="Usuario" size="large">
-                                                <el-option v-for="user in users" :key="user.id" :label="user.name" :value="user.id"/>
-                                            </el-select>
-                                        </el-form-item>
+                                <button type="button" v-on:click="addAddress" class="bg-blue-700 hover:bg-blue-200 text-white font-bold py-2 px-4 rounded h-8">
+                                    <div class="flex justify-center items-center gap-2 text-sm">
+                                        <span>Agregar</span>
+                                        <PlusIcon class="h-[15px] w-[15px]"/>
                                     </div>
+                                </button>
+                            </div>
+                            
+                            <div class="flex flex-col gap-5">
+                                <div class="" v-for="(address, index) in form.addresses" :key="index">
+                                    <AddressForm :value="address" :id="index" @removeAddress="removeAddress"/>
                                 </div>
                             </div>
+                            
                         </el-form>
 
                         <div class="flex justify-end items-center gap-5 mt-5">
@@ -109,8 +72,9 @@
     import { Inertia } from '@inertiajs/inertia'
     import AppLayout from '@/Layouts/AppLayout.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
-    import { SaveAsIcon, OfficeBuildingIcon, UserIcon, InformationCircleIcon, XIcon, ClipboardCheckIcon } from '@heroicons/vue/solid'
-    import { financialsForm } from '../../Common/rules';
+    import { SaveAsIcon, OfficeBuildingIcon, UserIcon, PlusIcon, InformationCircleIcon, TrashIcon, XIcon, ClipboardCheckIcon } from '@heroicons/vue/solid'
+    import { requestsForm } from '../../Common/rules';
+import AddressForm from './AddressForm.vue';
 
     export default defineComponent({
         components: {
@@ -118,19 +82,28 @@
             SaveAsIcon,
             OfficeBuildingIcon,
             XIcon,
+            PlusIcon,
             Link,
             UserIcon,
+            TrashIcon,
             InformationCircleIcon,
             ClipboardCheckIcon,
             Head,
+            AddressForm
         },
-        props: ['entity', 'users', 'roles', 'can'],
+        props: ['entity', 'financials', 'can'],
         data () {
             return {
                 form: {
-                    roles: [],
+                    addresses: [{
+                        name: '',
+                        city: '',
+                        address: '',
+                        phone: '',
+                        notes: '',
+                    }],
                 },
-                rules: financialsForm,
+                rules: requestsForm,
                 loading: false,
             }
         },
@@ -145,10 +118,16 @@
                     if (isValid) {
                         this.loading = true;
                         
-                        Inertia.post( route('financials.store'), this.form );
+                        Inertia.post( route('requests.store'), this.form );
                     }
                 });
-            }
+            },
+            addAddress () {
+                this.form.addresses.push({});
+            },
+            removeAddress (index) {
+                this.form.addresses.splice(index, 1);
+            },
         }
     })
 </script>

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\FinancialController;
-use App\Http\Controllers\Admin\RequestedController;
+use App\Http\Controllers\Admin\RequestController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +30,7 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth:sanctum', 'verified', 'admin.access'], 'prefix' => 'admin'], function () {
     Route::resource('/users', UserController::class);
     Route::resource('/financials', FinancialController::class);
-    Route::resource('/request', RequestedController::class);
+    Route::resource('/request', RequestController::class);
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');

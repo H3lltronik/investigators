@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFormReqRequest;
 use App\Models\Financial;
+use App\Models\Request;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -18,22 +19,23 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(HttpRequest $request) {
         $search = $request->search;
-        $request = Financial::orderBy('id', 'desc')
-            ->where('name', 'LIKE', "%$search%")
-            ->orWhere('address', 'LIKE', "%$search%")
-            ->orWhere('bank', 'LIKE', "%$search%")
-            ->orWhere('description', 'LIKE', "%$search%")
-            ->paginate(6);
+        $requests = Request::orderBy('id', 'desc');
 
+        if ( Auth::user()->isAdmin() ) {
+            
+        } else {
+
+        }
+        $requests = $requests->paginate(6);
         
 
         return Inertia::render('Request/Request', [
             'can' => [
-                'admin.request.create' => Auth::user()->can('admin.request.show'),
+                'admin.requests.create' => Auth::user()->can('admin.requests.show'),
             ],
-            'request' => $request,
+            'requests' => $requests,
         ]);
     }
 
@@ -42,18 +44,16 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request) {
+    public function create(HttpRequest $request) {
         $entity = User::find( $request->id );
-        $users = User::orderBy('id', 'desc')->where('email', '!=', 'esau.egs1@gmail.com')->get();
-        $roles = Role::where('name', '!=', 'SUPER ADMIN')->get();
+        $financials = Auth::user()->financials()->get();
 
         return Inertia::render('Request/Create', [
             'can' => [
-                'admin.request.create' => Auth::user()->can('admin.request.create'),
+                'admin.requests.create' => Auth::user()->can('admin.requests.create'),
             ],
             'entity' => $entity,
-            'roles' => $roles,
-            'users' => $users,
+            'financials' => $financials,
         ]);
     }
 
@@ -72,7 +72,7 @@ class RequestController extends Controller
         $entity->user_id = $request->get('user_id');
 
         $entity->save();
-        return redirect()->route('request.index');
+        return redirect()->route('requests.index');
     }
 
     /**
@@ -87,7 +87,7 @@ class RequestController extends Controller
 
         return Inertia::render('Request/Create', [
             'can' => [
-                'admin.request.show' => Auth::user()->can('admin.request.show'),
+                'admin.requests.show' => Auth::user()->can('admin.requests.show'),
             ],
             'entity' => $entity,
             'users' => $users,
@@ -110,7 +110,7 @@ class RequestController extends Controller
 
         $entity->save();
         
-        return redirect()->route('request.index')->with('success', 'Editado correctamente');
+        return redirect()->route('requests.index')->with('success', 'Editado correctamente');
     }
 
     /**
@@ -120,7 +120,7 @@ class RequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(HttpRequest $request, $id) {
         //
     }
 
@@ -133,7 +133,7 @@ class RequestController extends Controller
     public function destroy($id) {
         Financial::destroy($id);
 
-        return redirect()->route('request.index')->with('success', 'Borrado correctamente');
+        return redirect()->route('requests.index')->with('success', 'Borrado correctamente');
 
     }
 }

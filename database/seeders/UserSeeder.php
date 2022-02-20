@@ -42,6 +42,12 @@ class UserSeeder extends Seeder {
             'user_id' => $client->id,
         ]);
 
+        Financial::create([
+            'name' => 'Financiera Admin',
+            'description' => 'Descripcion',
+            'user_id' => $admin->id,
+        ]);
+
         $promoter = User::create([
             'name' => 'Promoter',
             'phone' => '3317354536',

@@ -56,5 +56,19 @@ class RoleSeeder extends Seeder
             $permission->assignRole($superAdminRole);
             $permission->assignRole($adminRole);
         }
+        
+        // REQUESTS
+        $adminRequestsPermissions = [];
+        $adminRequestsPermissions[] = Permission::create(['name' => 'admin.requests.create']);
+        $adminRequestsPermissions[] = Permission::create(['name' => 'admin.requests.show']);
+        $adminRequestsPermissions[] = Permission::create(['name' => 'admin.requests.edit']);
+        $adminRequestsPermissions[] = Permission::create(['name' => 'admin.requests.delete']);
+
+        foreach ($adminRequestsPermissions as $key => $permission) {
+            $permission->assignRole($superAdminRole);
+            $permission->assignRole($adminRole);
+        }
+
+        
     }
 }

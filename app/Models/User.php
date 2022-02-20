@@ -70,4 +70,9 @@ class User extends Authenticatable
     public function user() {
         return $this->hasMany(Tasks::class);
     }
+
+    public function isAdmin() {
+        $roles = $this->roles->pluck('name')->toArray();
+        return in_array('SUPER ADMIN', $roles) || in_array('role.admin', $roles);
+    }
 }
