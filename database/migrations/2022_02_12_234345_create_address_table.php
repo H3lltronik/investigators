@@ -13,14 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('financials', function (Blueprint $table) {
+        Schema::create('address', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name')->nullable()->default('');
+            $table->string('phone')->nullable()->default('');
+            $table->string('city')->nullable()->default('');
             $table->string('address')->nullable()->default('');
-            $table->string('bank')->nullable()->default('');
-            $table->tinyText('description')->nullable();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->string('status')->nullable()->default('');
+            $table->foreignId('request_id')->references('id')->on('requests');
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('financials');
+        Schema::dropIfExists('address');
     }
 };

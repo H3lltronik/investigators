@@ -66,4 +66,8 @@ class User extends Authenticatable
     public function financials() {
         return $this->hasMany(Financial::class);
     }
+
+    public function user() {
+        return $this->hasMany(Tasks::class);
+    }
 }

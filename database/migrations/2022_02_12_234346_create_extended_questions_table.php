@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('financials', function (Blueprint $table) {
+        Schema::create('extended_questions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name')->nullable()->default('');
-            $table->string('address')->nullable()->default('');
-            $table->string('bank')->nullable()->default('');
-            $table->tinyText('description')->nullable();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->string('type')->nullable()->default('');
+            $table->foreignId('address_id')->references('id')->on('address');
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('financials');
+        Schema::dropIfExists('extended_questions');
     }
 };
