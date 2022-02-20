@@ -19,9 +19,9 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg" v-loading="loading">
                     <div class="px-4 py-7">
-                        <!-- aber
-                        <pre>
-                            {{financials}}
+                        <!-- aber -->
+                        <!-- <pre>
+                            {{form}}
                         </pre> -->
 
                         <el-form ref="form" :rules="rules" :action="route('financials.store')" :model="form" label-position="top" >
@@ -38,7 +38,7 @@
                             
                             <div class="flex flex-col gap-5">
                                 <div class="" v-for="(address, index) in form.addresses" :key="index">
-                                    <AddressForm :value="address" :id="index" @removeAddress="removeAddress"/>
+                                    <AddressForm :value="address" :id="index" @removeAddress="removeAddress" :enableDelete="canDeleteAddress"/>
                                 </div>
                             </div>
                             
@@ -74,7 +74,7 @@
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import { SaveAsIcon, OfficeBuildingIcon, UserIcon, PlusIcon, InformationCircleIcon, TrashIcon, XIcon, ClipboardCheckIcon } from '@heroicons/vue/solid'
     import { requestsForm } from '../../Common/rules';
-import AddressForm from './AddressForm.vue';
+    import AddressForm from './AddressForm.vue';
 
     export default defineComponent({
         components: {
@@ -94,15 +94,6 @@ import AddressForm from './AddressForm.vue';
         props: ['entity', 'financials', 'can'],
         data () {
             return {
-                form: {
-                    addresses: [{
-                        name: '',
-                        city: '',
-                        address: '',
-                        phone: '',
-                        notes: '',
-                    }],
-                },
                 rules: requestsForm,
                 loading: false,
             }
@@ -123,11 +114,38 @@ import AddressForm from './AddressForm.vue';
                 });
             },
             addAddress () {
-                this.form.addresses.push({});
+                this.form.addresses.push({
+                    name: '',
+                    city: '',
+                    address: '',
+                    phone: '',
+                    hasExtendedQuestions: false,
+                    extendedQuestions: [
+                        {
+                            type: '',
+                            name: '',
+                        },
+                    ]
+                });
             },
             removeAddress (index) {
+                if (!this.canDeleteAddress) return
                 this.form.addresses.splice(index, 1);
             },
-        }
+            
+        },
+        computed: {
+            form: {
+                get () {
+                    return this.$store.getters.requestForm
+                },
+                set (value) {
+                    this.$store.commit('updateRequestForm', value)
+                }
+            },
+            canDeleteAddress () {
+                return (this.form.addresses.length > 1)
+            }, 
+        },
     })
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="bg-gray-300 flex flex-wrap rounded-md p-3">
         <div class="basis-full flex items-center justify-end">
-            <button type="button" class="rounded-full bg-red-400 p-1 hover:bg-red-700 transition" @click="removeAddress(index)">
+            <button type="button" class="rounded-full bg-red-400 p-1 hover:bg-red-700 transition" @click="removeAddress(index)" v-show="enableDelete">
                 <TrashIcon class="h-4 w-4 m-auto text-white"/>
             </button>
         </div>
@@ -43,10 +43,10 @@
         </div>
         <div class="basis-1/3 px-3">
             <el-form-item label="Preguntas extendidas" prop="extended">
-                <el-checkbox v-model="value.isExtended"></el-checkbox>
+                <el-checkbox v-model="value.hasExtendedQuestions" @change="toggleExtendedQuestions"></el-checkbox>
             </el-form-item>
         </div>
-        <div class="basis-full px-3">
+        <div class="basis-full px-3" >
             <el-form-item label="Notas" prop="name">
                 <el-input type="textarea" v-model="value.notes" placeholder="Notas" id="notes" name="notes">
                     <template #prefix>
@@ -55,7 +55,7 @@
                 </el-input>
             </el-form-item>
         </div>
-        <div class="basis-full px-3 pt-3 mt-1 border-t">
+        <div class="basis-full px-3 pt-3 mt-1 border-t" v-show="value.hasExtendedQuestions">
             <div class="mb-3 flex items-center justify-between">
                 <span>Preguntas extendidas</span>
 
@@ -63,22 +63,22 @@
                     <PlusIcon class="h-4 w-4 m-auto text-white"/>
                 </button>
             </div>
-            <div class="flex items-center gap-5">
+            <div class="flex items-center gap-5" v-for="(extendedQuestion, index) in value.extendedQuestions" :key="index">
                 <el-form-item label="Tipo de pregunta" prop="name" class="">
-                    <el-radio-group v-model="value.type">
+                    <el-radio-group v-model="extendedQuestion.type">
                         <el-radio label="text">Texto</el-radio>
                         <el-radio label="picture">Fotografia</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="Nombre de pregunta" prop="name" class="basis-1/3">
-                    <el-input v-model="value.notes" placeholder="Nombre de pregunta" id="name" name="name">
+                    <el-input v-model="extendedQuestion.name" placeholder="Nombre de pregunta" id="name" name="name">
                         <template #prefix>
                             <UserIcon class="h-4 w-4 m-auto"/>
                         </template>
                     </el-input>
                 </el-form-item>
 
-                <button type="button" class="rounded-full bg-red-400 p-1 hover:bg-red-700 transition" @click="removeExtendedQuestion(index)">
+                <button type="button" class="rounded-full bg-red-700 p-1 hover:bg-red-400 transition" @click="removeExtendedQuestion(index)" v-show="canDeleteExtdQuestions">
                     <TrashIcon class="h-4 w-4 m-auto text-white"/>
                 </button>
             </div>
@@ -89,6 +89,8 @@
 
 <script>
 import { SaveAsIcon, OfficeBuildingIcon, UserIcon, PlusIcon, InformationCircleIcon, TrashIcon, XIcon, ClipboardCheckIcon } from '@heroicons/vue/solid'
+import {EXTENDED_QUESTIONS_PER_REQUEST} from '../../config'
+import { showNotification } from '../../Utils/helpers';
 
 export default {
     components: {
@@ -101,7 +103,7 @@ export default {
         InformationCircleIcon,
         ClipboardCheckIcon,
     },
-    props: ['value', 'id'],
+    props: ['value', 'id', 'enableDelete'],
     data () {
         return {
 
@@ -112,11 +114,41 @@ export default {
             this.$emit('removeAddress', this.id);
         },
         addExtendedQuestion () {
-            
+            if (this.totalExtendedQuestionsQnt >= EXTENDED_QUESTIONS_PER_REQUEST) {
+                this.showMaxNotification()
+                return
+            }
+            this.value.extendedQuestions.push({
+                name: '',
+                type: 'text',
+            })
         },
-        removeExtendedQuestion () {
-            
+        removeExtendedQuestion (index) {
+            if (!this.canDeleteExtdQuestions) return
+            this.value.extendedQuestions.splice(index, 1);
         },
+        toggleExtendedQuestions (value) {
+            if (this.totalExtendedQuestionsQnt >= EXTENDED_QUESTIONS_PER_REQUEST) {
+                this.showMaxNotification()
+                this.value.hasExtendedQuestions = false;
+            }
+
+            if (value && this.extendedQuestionsQnt <= 0) this.addExtendedQuestion()
+        },
+        showMaxNotification () {
+            showNotification('error', 'Maximo alcanzado', `Se permiten maximo ${EXTENDED_QUESTIONS_PER_REQUEST} por solicitud.`)
+        }
+    },
+    computed: {
+        canDeleteExtdQuestions () {
+            return this.value.extendedQuestions.length > 1
+        },
+        totalExtendedQuestionsQnt () {
+            return this.$store.getters.extendedQuestionsQnt
+        }, 
+        extendedQuestionsQnt () {
+            return this.value.extendedQuestions.length
+        }, 
     }
 }
 </script>
