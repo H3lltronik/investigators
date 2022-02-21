@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('address')->nullable()->default('');
             $table->string('bank')->nullable()->default('');
             $table->tinyText('description')->nullable();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
         });
     }
 

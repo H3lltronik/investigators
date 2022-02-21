@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@heroicons/vue": "^1.0.5",
+        "dayjs": "^1.10.7",
         "element-plus": "^2.0.1",
         "vuex": "^4.0.2"
     }

@@ -59,7 +59,36 @@
                 </el-input>
             </el-form-item>
         </div>
-        
+        <div class="basis-full px-3 pt-3 mt-1 border-t" v-show="value.hasExtendedQuestions">
+            <div class="mb-3 flex items-center justify-between">
+                <span>Preguntas extendidas</span>
+
+                <button type="button" class="rounded-full bg-blue-400 p-1 hover:bg-blue-700 transition" @click="addExtendedQuestion">
+                    <PlusIcon class="h-4 w-4 m-auto text-white"/>
+                </button>
+            </div>
+            <div class="flex items-center gap-5" v-for="(extendedQuestion, index) in value.extendedQuestions" :key="index">
+                <el-form-item label="Tipo de pregunta" :prop="`addresses[${id}].extendedQuestions[${index}].type`" class=""
+                :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
+                    <el-radio-group v-model="extendedQuestion.type">
+                        <el-radio label="text">Texto</el-radio>
+                        <el-radio label="picture">Fotografia</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="Nombre de pregunta" :prop="`addresses[${id}].extendedQuestions[${index}].name`" class="basis-1/3"
+                :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
+                    <el-input v-model="extendedQuestion.name" placeholder="Nombre de pregunta">
+                        <template #prefix>
+                            <UserIcon class="h-4 w-4 m-auto"/>
+                        </template>
+                    </el-input>
+                </el-form-item>
+
+                <button type="button" class="rounded-full bg-red-700 p-1 hover:bg-red-400 transition" @click="removeExtendedQuestion(index)" v-show="canDeleteExtdQuestions">
+                    <TrashIcon class="h-4 w-4 m-auto text-white"/>
+                </button>
+            </div>
+        </div>
 
     </div>
 </template>

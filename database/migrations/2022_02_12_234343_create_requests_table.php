@@ -16,13 +16,9 @@ return new class extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name')->nullable()->default('');
-            $table->string('city')->nullable()->default('');
-            $table->string('phone')->nullable()->default('');
-            $table->string('status')->nullable()->default('');
-            $table->string('address')->nullable()->default('');
             $table->text('notes')->nullable();
-            $table->foreignId('financial_id')->references('id')->on('financials');
+            $table->string('status')->nullable()->default('PENDING');
+            $table->foreignId('financial_id')->nullable()->references('id')->on('financials');
         });
     }
 

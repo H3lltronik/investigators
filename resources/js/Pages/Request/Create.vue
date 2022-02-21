@@ -19,15 +19,26 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg" v-loading="loading">
                     <div class="px-4 py-7">
-                        aber
+                        <!-- aber
                         <pre>
                             {{$page.props.errors}}
-                        </pre>
+                        </pre>-->
                         <pre>
                             {{form}}
-                        </pre>
+                        </pre> 
 
                         <el-form ref="form" :action="route('request.store')" :model="form" label-position="top" >
+                            <div class="flex flex-col align-center justify-between mb-4">
+                                <div class="mb-4 ml-2">Financiera</div>
+
+                                <el-form-item label="Financiera" prop="financial_id"
+                                :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
+                                    <el-select v-model="form.financial_id" placeholder="Financiera">
+                                        <el-option v-for="financial in financials" :key="financial.id" :label="financial.name" :value="financial.id">{{ financial.name }}</el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </div>
+
                             <div class="flex align-center justify-between">
                                 <div class="mb-4 ml-2">Domicilios ligados</div>
 

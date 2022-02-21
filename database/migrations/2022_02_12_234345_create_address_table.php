@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('address', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name')->nullable()->default('');
             $table->string('phone')->nullable()->default('');
             $table->string('city')->nullable()->default('');
             $table->string('address')->nullable()->default('');
-            $table->string('status')->nullable()->default('');
-            $table->foreignId('request_id')->references('id')->on('requests');
+            $table->string('status')->nullable()->default('PENDING');  
+            $table->foreignId('request_id')->nullable()->references('id')->on('requests');
         });
     }
 
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address');
+        Schema::dropIfExists('addresses');
     }
 };

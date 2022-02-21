@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name')->nullable()->default('');
             $table->string('type')->nullable()->default('');
-            $table->foreignId('address_id')->references('id')->on('address');
+            $table->foreignId('address_id')->nullable()->references('id')->on('addresses');
         });
     }
 

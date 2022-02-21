@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFormReqRequest;
+use App\Models\Address;
+use App\Models\ExtendedQuestion;
 use App\Models\Financial;
 use App\Models\Request;
 use App\Models\User;
@@ -21,14 +23,16 @@ class RequestController extends Controller
      */
     public function index(HttpRequest $request) {
         $search = $request->search;
-        $requests = Request::orderBy('id', 'desc');
+        $query = Request::select('*')->has('user')->with(['user' => function ($innerQuery) {
+            return $innerQuery->orderBy('id','ASC');
+        }]);
 
         if ( Auth::user()->isAdmin() ) {
             
         } else {
 
         }
-        $requests = $requests->paginate(6);
+        $requests = $query->paginate(6);
         
 
         return Inertia::render('Request/Request', [
@@ -64,15 +68,33 @@ class RequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreFormReqRequest $request) {
-        return dump($request);
-        // $entity = Financial::firstOrCreate(['id' => $request->id]);
-        // $entity->name = $request->get('name');
-        // $entity->address = $request->get('address');
-        // $entity->bank = $request->get('bank');
-        // $entity->description = $request->get('description');
-        // $entity->user_id = $request->get('user_id');
+        $entity = Request::firstOrCreate(['id' => $request->id]);
+        $entity->financial_id = $request->get('financial_id');
+        $addresses = $request->get('addresses');
+        // return dump(count($addresses));
+        $entity->save();
 
-        // $entity->save();
+        foreach ($addresses as $key => $address) {
+            $addressEntity = Address::firstOrCreate(['id' => $address['id'] ?? null]);
+            $addressEntity->request_id = $entity->id;
+
+            $addressEntity->name = $address['name'];
+            $addressEntity->city = $address['city'];
+            $addressEntity->phone = $address['phone'];
+            $addressEntity->address = $address['address'];
+            $addressEntity->save();
+            if ( filter_var($address['hasExtendedQuestions'], FILTER_VALIDATE_BOOLEAN) ) {
+                foreach ($address['extendedQuestions'] as $key => $extendedQuestion) {
+                    $questionEntity = ExtendedQuestion::firstOrCreate(['id' => $extendedQuestion['id'] ?? null]);
+                    $questionEntity->name = $address['name'];
+                    $questionEntity->type = $address['type'];
+                    $questionEntity->request_id = $entity->id;
+                    $questionEntity->address_id = $addressEntity->id;
+                    $questionEntity->save();
+                }
+            }
+        }
+
         return redirect()->route('request.index');
     }
 

@@ -9,7 +9,7 @@ class ExtendedQuestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 'name', 'type', 'request_id'];
+    protected $fillable = [ 'name', 'type', 'request_id', 'address_id'];
 
     public function address() {
         return $this->belongsTo(Address::class);

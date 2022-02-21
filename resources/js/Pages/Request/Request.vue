@@ -35,10 +35,14 @@
                             {{requests.data}}
                         </pre> -->
                         <el-table :data="requests.data" stripe class="w-full" v-if="requests">
-                            <el-table-column prop="name" label="Nombre" />
-                            <el-table-column prop="address" label="Direccion"/>
-                            <el-table-column prop="bank" label="Banco"/>
-                            <el-table-column prop="description" label="Descripcion"/>
+                            <el-table-column prop="user.name" label="Usuario" />
+                            <el-table-column prop="user.phone" label="Telefono" />
+                            <el-table-column prop="status" label="Status" />
+                            <el-table-column prop="created_at" label="Fecha de creacion">
+                                <template #default="scope">
+                                    <span>{{ dayjs(scope.row.created_at).locale('es').format('YYYY/MM/DD') }}</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="Operaciones">
                                 <template #default="scope">
                                     <div class="flex items-center gap-3">
@@ -68,6 +72,8 @@
     import Search from '../../Components/Search.vue'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import { Inertia } from '@inertiajs/inertia'
+    import 'dayjs/locale/es'
+    import dayjs from 'dayjs'
 
     export default defineComponent({
         components: {
@@ -81,6 +87,7 @@
         props: ['requests', 'can'],
         data () {
             return {
+                dayjs,
             }
         },
         mounted () {

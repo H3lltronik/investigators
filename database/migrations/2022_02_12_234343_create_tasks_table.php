@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('status')->nullable()->default('');
             $table->json('responses')->nullable();
             $table->json('form')->nullable();
-            $table->foreignId('user_id')->references('id')->on('users');
-            $table->foreignId('request_id')->references('id')->on('requests');
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
+            $table->foreignId('request_id')->nullable()->references('id')->on('requests');
         });
     }
 

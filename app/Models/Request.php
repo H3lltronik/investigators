@@ -18,6 +18,10 @@ class Request extends Model
     public function financial() {
         return $this->belongsTo(Financial::class);
     }
+
+    public function user() {
+        return $this->hasOneThrough(User::class, Financial::class, 'user_id', 'id');
+    }
     
     public function task() {
         return $this->hasOne(Tasks::class);
