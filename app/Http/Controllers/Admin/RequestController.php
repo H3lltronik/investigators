@@ -34,9 +34,7 @@ class RequestController extends Controller
         $requests = $query->paginate(6);
 
         return Inertia::render('Request/Request', [
-            'can' => [
-                'admin.requests.create' => Auth::user()->can('admin.requests.show'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
             'requests' => $requests,
         ]);
     }
@@ -57,10 +55,8 @@ class RequestController extends Controller
         }
 
         return Inertia::render('Request/Create', [
-            'can' => [
-                'isAdmin' => Auth::user()->isAdmin(),
-                'admin.requests.create' => Auth::user()->can('admin.requests.create'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
+            'isAdmin' => Auth::user()->isAdmin(),
             'entity' => $entity,
             'financials' => $financials,
         ]);
@@ -118,9 +114,7 @@ class RequestController extends Controller
         $financials = Auth::user()->financials()->get();
 
         return Inertia::render('Request/Create', [
-            'can' => [
-                'admin.requests.show' => Auth::user()->can('admin.requests.show'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
             'entity' => $entity[0],
             'financials' => $financials,
         ]);
@@ -175,22 +169,24 @@ class RequestController extends Controller
             },
             'task',
         ])->where('id', '=', $id)->get();
+        $task = Tasks::where('request_id', '=', $id)->get();
         $promoters = User::whereHas("roles", function ($q) {
             $q->where("name", "role.promoter");
         })->get();
 
         return Inertia::render('Request/Assign', [
-            'can' => [
-                'admin.requests.show' => Auth::user()->can('admin.requests.show'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
             'entity' => $entity[0],
             'promoters' => $promoters,
+            'task' => $task[0],
         ]);
     }
 
     public function assign(HttpRequest $request)
     {
-        $task = Tasks::create([
+        return dump($request);
+        $task = Tasks::firstOrCreate([
+            'id' => $request->task_id,
             'user_id' => $request->promoter_id,
             'request_id' => $request->request_id,
         ]);

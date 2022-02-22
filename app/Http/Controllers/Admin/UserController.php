@@ -26,9 +26,7 @@ class UserController extends Controller
             ->paginate(6);
 
         return Inertia::render('Users/Users', [
-            'can' => [
-                'admin.users.create' => Auth::user()->can('admin.users.show'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
             'users' => $users,
         ]);
     }
@@ -43,9 +41,7 @@ class UserController extends Controller
         $roles = Role::where('name', '!=', 'SUPER ADMIN')->get();
 
         return Inertia::render('Users/Create', [
-            'can' => [
-                'admin.users.create' => Auth::user()->can('admin.users.create'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
             'entity' => $entity,
             'roles' => $roles,
         ]);
@@ -87,9 +83,7 @@ class UserController extends Controller
         }, $entity->roles->toArray() );
 
         return Inertia::render('Users/Create', [
-            'can' => [
-                'admin.users.show' => Auth::user()->can('admin.users.show'),
-            ],
+            'can' => Auth::user()->getAllUserPermissions(),
             'entity' => $entity,
             'roles' => $roles,
         ]);

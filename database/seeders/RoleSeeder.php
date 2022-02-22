@@ -27,6 +27,7 @@ class RoleSeeder extends Seeder
         $loginPermissions[] = Permission::create(['name' => 'app.access']);
 
         $clientRole->givePermissionTo($loginPermissions[0]);
+        $promoterRole->givePermissionTo($loginPermissions[0]);
 
         foreach ($loginPermissions as $key => $permission) {
             $permission->assignRole($superAdminRole);
@@ -64,7 +65,22 @@ class RoleSeeder extends Seeder
         $adminRequestsPermissions[] = Permission::create(['name' => 'admin.requests.edit']);
         $adminRequestsPermissions[] = Permission::create(['name' => 'admin.requests.delete']);
 
+        $adminRequestsPermissions[0]->assignRole($clientRole);
+        $adminRequestsPermissions[1]->assignRole($clientRole);
+
         foreach ($adminRequestsPermissions as $key => $permission) {
+            $permission->assignRole($superAdminRole);
+            $permission->assignRole($adminRole);
+        }
+        
+        // REQUESTS
+        $adminTasksPermissions = [];
+        $adminTasksPermissions[] = Permission::create(['name' => 'admin.tasks.create']);
+        $adminTasksPermissions[] = Permission::create(['name' => 'admin.tasks.show']);
+        $adminTasksPermissions[] = Permission::create(['name' => 'admin.tasks.edit']);
+        $adminTasksPermissions[] = Permission::create(['name' => 'admin.tasks.delete']);
+
+        foreach ($adminTasksPermissions as $key => $permission) {
             $permission->assignRole($superAdminRole);
             $permission->assignRole($adminRole);
         }

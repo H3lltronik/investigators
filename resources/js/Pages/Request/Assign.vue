@@ -17,6 +17,9 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg" v-loading="loading">
                     <div class="px-4 py-7">
+                        <!-- <pre>
+                            {{task}}
+                        </pre> -->
 
                         <el-form ref="requestInfo" :model="requestInfo" label-position="top" >
                             <div class="mb-5 flex align-center gap-5 p-1 pb-3 shadow-md">
@@ -90,6 +93,10 @@
                                 <el-form-item prop="request_id" hidden style="display: none !important;">
                                     <el-input type="text" disabled hidden v-model="form.request_id"/>
                                 </el-form-item>
+
+                                <el-form-item prop="task_id" hidden style="display: none !important;">
+                                    <el-input type="text" disabled hidden v-model="form.task_id"/>
+                                </el-form-item>
                             </el-form>
                         </div>
 
@@ -150,7 +157,7 @@
             Head,
             AddressForm
         },
-        props: ['entity', 'financials', 'promoters', 'can'],
+        props: ['entity', 'financials', 'promoters', 'can', 'task'],
         data () {
             return {
                 loading: false,
@@ -161,13 +168,10 @@
             if (this.entity) {
                 this.requestInfo = this.entity;
                 this.form.request_id = this.requestInfo.id;
-                // if ( Array.isArray(this.requestInfo.addresses) )
-                //     // this.requestInfo.addresses = this.requestInfo.addresses.map(address => {
-                //     //     return {
-                //     //         ...address,
-                //     //         hasExtendedQuestions: !!address.hasExtendedQuestions
-                //     //     }
-                //     // })
+            }
+            if (this.task) {
+                this.form.promoter_id = this.task.user_id
+                this.form.task_id = this.task.id
             }
         },
         methods: {

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFinancialsRequest;
-use App\Models\Financial;
+use App\Models\Tasks;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
-class FinancialController extends Controller
+class TasksController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,18 +20,14 @@ class FinancialController extends Controller
      */
     public function index(Request $request) {
         $search = $request->search;
-        $financials = Financial::orderBy('id', 'desc')
-            ->where('name', 'LIKE', "%$search%")
-            ->orWhere('address', 'LIKE', "%$search%")
-            ->orWhere('bank', 'LIKE', "%$search%")
-            ->orWhere('description', 'LIKE', "%$search%")
+        $tasks = Tasks::with(['user', 'request' => function ($innerQuery) {
+                return $innerQuery->with(['addresses']);
+            }])
             ->paginate(6);
 
-        
-
-        return Inertia::render('Financials/Financials', [
+        return Inertia::render('Tasks/Tasks', [
             'can' => Auth::user()->getAllUserPermissions(),
-            'financials' => $financials,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -45,7 +41,7 @@ class FinancialController extends Controller
         $users = User::orderBy('id', 'desc')->where('email', '!=', 'esau.egs1@gmail.com')->get();
         $roles = Role::where('name', '!=', 'SUPER ADMIN')->get();
 
-        return Inertia::render('Financials/Create', [
+        return Inertia::render('Tasks/Create', [
             'can' => Auth::user()->getAllUserPermissions(),
             'entity' => $entity,
             'roles' => $roles,
@@ -60,7 +56,7 @@ class FinancialController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreFinancialsRequest $request) {
-        $entity = Financial::firstOrCreate(['id' => $request->id]);
+        $entity = Tasks::firstOrCreate(['id' => $request->id]);
         $entity->name = $request->get('name');
         $entity->address = $request->get('address');
         $entity->bank = $request->get('bank');
@@ -68,7 +64,7 @@ class FinancialController extends Controller
         $entity->user_id = $request->get('user_id');
 
         $entity->save();
-        return redirect()->route('financials.index');
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -78,10 +74,10 @@ class FinancialController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        $entity = Financial::find($id);
+        $entity = Tasks::find($id);
         $users = User::orderBy('id', 'desc')->where('email', '!=', 'esau.egs1@gmail.com')->get();
 
-        return Inertia::render('Financials/Create', [
+        return Inertia::render('Tasks/Create', [
             'can' => Auth::user()->getAllUserPermissions(),
             'entity' => $entity,
             'users' => $users,
@@ -95,7 +91,7 @@ class FinancialController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id, StoreFinancialsRequest $request) {
-        $entity = Financial::find(['id' => $id]);
+        $entity = Tasks::find(['id' => $id]);
         $entity->name = $request->get('name');
         $entity->address = $request->get('address');
         $entity->bank = $request->get('bank');
@@ -104,7 +100,7 @@ class FinancialController extends Controller
 
         $entity->save();
         
-        return redirect()->route('financials.index')->with('success', 'Editado correctamente');
+        return redirect()->route('tasks.index')->with('success', 'Editado correctamente');
     }
 
     /**
@@ -125,9 +121,9 @@ class FinancialController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        Financial::destroy($id);
+        Tasks::destroy($id);
 
-        return redirect()->route('financials.index')->with('success', 'Borrado correctamente');
+        return redirect()->route('tasks.index')->with('success', 'Borrado correctamente');
 
     }
 }

@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Models\Permission;
 
 class User extends Authenticatable
 {
@@ -74,5 +75,14 @@ class User extends Authenticatable
     public function isAdmin() {
         $roles = $this->roles->pluck('name')->toArray();
         return in_array('SUPER ADMIN', $roles) || in_array('role.admin', $roles);
+    }
+
+    public function getAllUserPermissions() {
+        $permissions = Permission::all()->toArray();
+        $result = [];
+        foreach ($permissions as $key => $permission) {
+            $result[$permission['name']] = $this->can($permission['name']);
+        }
+        return $result;
     }
 }

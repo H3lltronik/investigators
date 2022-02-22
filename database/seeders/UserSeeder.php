@@ -57,6 +57,17 @@ class UserSeeder extends Seeder {
             'password' => '$2y$10$UGUqS1adZtIN5SJbRvhKY.wo3tJwUBxdv9yIaW4EIuPqGmVepLA9m',
             'remember_token' => Str::random(10),
         ]);
+        
         $promoter->assignRole('role.promoter');
+        $promoter1 = User::create([
+            'name' => 'Promoter',
+            'phone' => '3317354536',
+            'address' => 'Juan B Berdeja',
+            'email' => 'promoter1@gmail.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$UGUqS1adZtIN5SJbRvhKY.wo3tJwUBxdv9yIaW4EIuPqGmVepLA9m',
+            'remember_token' => Str::random(10),
+        ]);
+        $promoter1->assignRole('role.promoter');
     }
 }

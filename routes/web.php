@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\FinancialController;
 use App\Http\Controllers\Admin\RequestController;
+use App\Http\Controllers\Admin\TasksController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,8 +34,12 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'admin.access'], 'pre
     Route::resource('/request', RequestController::class);
     Route::get('/request/evaluate/{id}', [RequestController::class, 'evaluate'])->name('request.evaluate');
     Route::post('/request/assign', [RequestController::class, 'assign'])->name('request.assign');
+    
+    Route::resource('/tasks', TasksController::class);
 
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Dashboard', [
+            'can' => Auth::user()->getAllUserPermissions(),
+        ]);
     })->name('dashboard');
 });

@@ -2,6 +2,10 @@
     <div>
         <Head :title="title" />
 
+        <!-- <pre>
+            {{$page.props.can}}
+        </pre> -->
+
         <jet-banner />
 
         <div class="min-h-screen bg-gray-100">
@@ -22,14 +26,17 @@
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Inicio
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('users.index')" :active="route().current('users.index')">
+                                <jet-nav-link :href="route('users.index')" :active="route().current('users.index')" v-if="$page.props.can['admin.users.show']">
                                     Usuarios
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('request.index')" :active="route().current('request.index')">
+                                <jet-nav-link :href="route('request.index')" :active="route().current('request.index')" v-if="$page.props.can['admin.requests.show']">
                                     Solicitudes
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('financials.index')" :active="route().current('financials.index')">
+                                <jet-nav-link :href="route('financials.index')" :active="route().current('financials.index')" v-if="$page.props.can['admin.financial.show']">
                                     Financieras
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('tasks.index')" :active="route().current('tasks.index')" v-if="$page.props.can['admin.tasks.show']">
+                                    Tareas
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -74,9 +81,9 @@
 
                                     <template #content>
                                         <!-- Account Management -->
-                                        <jet-dropdown-link :href="route('profile.show')">
+                                        <!-- <jet-dropdown-link :href="route('profile.show')">
                                             Profile
-                                        </jet-dropdown-link>
+                                        </jet-dropdown-link> -->
 
                                         <jet-dropdown-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
                                             API Tokens
@@ -129,9 +136,9 @@
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
+                            <!-- <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
-                            </jet-responsive-nav-link>
+                            </jet-responsive-nav-link> -->
 
                             <jet-responsive-nav-link :href="route('api-tokens.index')" :active="route().current('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
                                 API Tokens
