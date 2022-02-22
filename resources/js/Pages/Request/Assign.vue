@@ -18,7 +18,7 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg" v-loading="loading">
                     <div class="px-4 py-7">
 
-                        <el-form ref="request" :model="request" label-position="top" >
+                        <el-form ref="requestInfo" :model="requestInfo" label-position="top" >
                             <div class="mb-5 flex align-center gap-5 p-1 pb-3 shadow-md">
                                 <div class="basis-1/2 flex flex-col align-center">
                                     <div class="mb-4 ml-2 text-lg"><strong>Financiera</strong></div>
@@ -26,15 +26,15 @@
                                     <div class="pl-3">
                                         <div class="">
                                             <strong>Nombre: </strong>
-                                            <span>{{request.financial.name}}</span>
+                                            <span>{{requestInfo.financial.name}}</span>
                                         </div>
                                         <div class="">
                                             <strong>Banco: </strong>
-                                            <span>{{request.financial.bank}}</span>
+                                            <span>{{requestInfo.financial.bank}}</span>
                                         </div>
                                         <div class="">
                                             <strong>Descripcion: </strong>
-                                            <span>{{request.financial.description}}</span>
+                                            <span>{{requestInfo.financial.description}}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -44,19 +44,19 @@
                                     <div class="pl-3">
                                         <div class="">
                                             <strong>Nombre: </strong>
-                                            <span>{{request.financial.user.name}}</span>
+                                            <span>{{requestInfo.financial.user.name}}</span>
                                         </div>
                                         <div class="">
                                             <strong>Telefono: </strong>
-                                            <span>{{request.financial.user.phone}}</span>
+                                            <span>{{requestInfo.financial.user.phone}}</span>
                                         </div>
                                         <div class="">
                                             <strong>Direccion: </strong>
-                                            <span>{{request.financial.user.address}}</span>
+                                            <span>{{requestInfo.financial.user.address}}</span>
                                         </div>
                                         <div class="">
                                             <strong>Email: </strong>
-                                            <span>{{request.financial.user.email}}</span>
+                                            <span>{{requestInfo.financial.user.email}}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                             </div>
                             
                             <div class="flex flex-col gap-5">
-                                <div class="" v-for="(address, index) in request.addresses" :key="index">
+                                <div class="" v-for="(address, index) in requestInfo.addresses" :key="index">
                                     <AddressForm :editable="false" :value="address" :id="index" @removeAddress="removeAddress" :enableDelete="canDeleteAddress"/>
                                 </div>
                             </div>
@@ -78,26 +78,22 @@
                             <div class="flex align-center justify-between">
                                 <div class="mb-4 ml-2">Asignar solicitud a promotor</div>
                             </div>
-                            
-                            <div class="flex flex-col gap-5">
-                                <div class="" v-for="(promoter, index) in promoters" :key="index">
 
-                                </div>
-                            </div>
+                            <el-form ref="form" :model="form" label-position="top" >
+                                <el-form-item label="Promotor" prop="promoter_id"
+                                :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
+                                    <el-select v-model="form.promoter_id" placeholder="Promotor" filterable>
+                                        <el-option v-for="promoter in promoters" :key="promoter.id" :label="promoter.name" :value="promoter.id">{{ promoter.name }}</el-option>
+                                    </el-select>
+                                </el-form-item>
+
+                                <el-form-item prop="request_id" hidden style="display: none !important;">
+                                    <el-input type="text" disabled hidden v-model="form.request_id"/>
+                                </el-form-item>
+                            </el-form>
                         </div>
 
-                        <el-form ref="form" :action="route('request.store')" :model="form" label-position="top" >
-                            <el-form-item label="Promotor" prop="promoter_id"
-                            :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                                <el-select v-model="form.promoter_id" placeholder="Promotor">
-                                    <el-option v-for="promoter in promoters" :key="promoter.id" :label="promoter.name" :value="promoter.id">{{ promoter.name }}</el-option>
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item class="d-none" prop="request_id">
-                                <input type="text" hidden :value="request.id">
-                            </el-form-item>
-                        </el-form>
+                        
 
                         <div class="flex justify-end items-center gap-5 mt-5">
                             <Link :href="route('request.index')">
@@ -111,7 +107,7 @@
                             <Link :href="route('request.index')">
                                 <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                     <div class="flex justify-center items-center gap-2">
-                                        <span>Recharzar</span>
+                                        <span>Rechazar</span>
                                         <TrashIcon class="h-5 w-5"/>
                                     </div>
                                 </button>
@@ -163,14 +159,15 @@
         },
         created () {
             if (this.entity) {
-                this.request = this.entity;
-                if ( Array.isArray(this.request.addresses) )
-                    this.request.addresses = this.request.addresses.map(address => {
-                        return {
-                            ...address,
-                            hasExtendedQuestions: !!address.hasExtendedQuestions
-                        }
-                    })
+                this.requestInfo = this.entity;
+                this.form.request_id = this.requestInfo.id;
+                // if ( Array.isArray(this.requestInfo.addresses) )
+                //     // this.requestInfo.addresses = this.requestInfo.addresses.map(address => {
+                //     //     return {
+                //     //         ...address,
+                //     //         hasExtendedQuestions: !!address.hasExtendedQuestions
+                //     //     }
+                //     // })
             }
         },
         methods: {
@@ -185,7 +182,7 @@
                 });
             },
             addAddress () {
-                this.request.addresses.push({
+                this.requestInfo.addresses.push({
                     name: '',
                     city: '',
                     address: '',
@@ -201,12 +198,12 @@
             },
             removeAddress (index) {
                 if (!this.canDeleteAddress) return
-                this.request.addresses.splice(index, 1);
+                this.requestInfo.addresses.splice(index, 1);
             },
             
         },
         computed: {
-            request: {
+            requestInfo: {
                 get () {
                     return this.$store.getters.requestForm
                 },
@@ -215,7 +212,7 @@
                 }
             },
             canDeleteAddress () {
-                return (this.request.addresses.length > 1)
+                return (this.requestInfo.addresses.length > 1)
             }, 
         },
     })

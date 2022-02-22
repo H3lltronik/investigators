@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->date('completed_date')->nullable();
-            $table->string('status')->nullable()->default('');
+            $table->string('status')->nullable()->default('PENDING');
             $table->json('responses')->nullable();
             $table->json('form')->nullable();
             $table->foreignId('user_id')->nullable()->references('id')->on('users');

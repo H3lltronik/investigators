@@ -33,7 +33,7 @@
 
                                 <el-form-item label="Financiera" prop="financial_id"
                                 :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                                    <el-select v-model="form.financial_id" placeholder="Financiera">
+                                    <el-select v-model="form.financial_id" placeholder="Financiera" filterable>
                                         <el-option v-for="financial in financials" :key="financial.id" :label="financial.name" :value="financial.id">{{ financial.name }}</el-option>
                                     </el-select>
                                 </el-form-item>

@@ -49,10 +49,16 @@ class RequestController extends Controller
     public function create(HttpRequest $request)
     {
         $entity = User::find($request->id);
-        $financials = Auth::user()->financials()->get();
+
+        if (Auth::user()->isAdmin()) {
+            $financials = Financial::all();
+        } else {
+            $financials = Auth::user()->financials()->get();
+        }
 
         return Inertia::render('Request/Create', [
             'can' => [
+                'isAdmin' => Auth::user()->isAdmin(),
                 'admin.requests.create' => Auth::user()->can('admin.requests.create'),
             ],
             'entity' => $entity,
@@ -184,8 +190,10 @@ class RequestController extends Controller
 
     public function assign(HttpRequest $request)
     {
-        return dump($request);
-        $task = Tasks::create( $request->all() );
+        $task = Tasks::create([
+            'user_id' => $request->promoter_id,
+            'request_id' => $request->request_id,
+        ]);
 
         return redirect()->route('request.index')->with('success', 'Asignado correctamente');
     }

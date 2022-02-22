@@ -111,7 +111,14 @@ export default {
         InformationCircleIcon,
         ClipboardCheckIcon,
     },
-    props: ['value', 'id', 'enableDelete', 'editable'],
+    props: {
+        value: Object,
+        id: Number,
+        enableDelete: Boolean,
+        editable: {
+            default: true,
+        },
+    },
     data () {
         return {
 
