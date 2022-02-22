@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -54,18 +55,21 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreUserRequest $request) {
-        $entity = User::firstOrCreate(['id' => $request->id]);
+        
+        $entity = User::firstOrCreate([
+            'id' => $request->get('id')
+        ]);
+
         $entity->name = $request->get('name');
         $entity->email = $request->get('email');
         $entity->phone = $request->get('phone');
         $entity->address = $request->get('address');
-        $entity->password = $request->get('password');
-
-        $entity->save();
+        $entity->password = Hash::make($request->get('password'));
 
         foreach ($request->userRoles as $role) {
             $entity->assignRole($role);
         }
+        $entity->save();
         return redirect()->route('users.index');
     }
 
@@ -96,12 +100,14 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id, StoreUserRequest $request) {
-        $entity = User::find($id);
-        $entity->name = $request->get('name');
-        $entity->email = $request->get('email');
-        $entity->phone = $request->get('phone');
-        $entity->address = $request->get('address');
-        $entity->password = $request->get('password');
+        $entity = User::firstOrCreate([
+            'id' => $request->id,
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'phone' => $request->get('phone'),
+            'address' => $request->get('address'),
+            'password' => $request->get('password'),
+        ]);
 
         foreach ($request->roles as $role) {
             $entity->assignRole($role);

@@ -72,7 +72,7 @@
 
                                     <div class="">
                                         <el-form-item prop="user_id" class="mt-5" label="Usuario">
-                                            <el-select v-model="form.user_id" id="user_id" name="user_id" class="m-2" placeholder="Usuario" size="large">
+                                            <el-select filterable v-model="form.user_id" id="user_id" name="user_id" class="m-2" placeholder="Usuario" size="large">
                                                 <el-option v-for="user in users" :key="user.id" :label="user.name" :value="user.id"/>
                                             </el-select>
                                         </el-form-item>
