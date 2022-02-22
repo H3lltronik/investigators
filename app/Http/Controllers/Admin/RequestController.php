@@ -8,11 +8,11 @@ use App\Models\Address;
 use App\Models\ExtendedQuestion;
 use App\Models\Financial;
 use App\Models\Request;
+use App\Models\Tasks;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 
 class RequestController extends Controller
 {
@@ -21,19 +21,17 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(HttpRequest $request) {
+    public function index(HttpRequest $request)
+    {
         $search = $request->search;
         $query = Request::select('*')->has('user')->with(['user' => function ($innerQuery) {
-            return $innerQuery->orderBy('id','ASC');
+            return $innerQuery->orderBy('id', 'ASC');
         }]);
 
-        if ( Auth::user()->isAdmin() ) {
-            
+        if (Auth::user()->isAdmin()) {
         } else {
-
         }
         $requests = $query->paginate(6);
-        
 
         return Inertia::render('Request/Request', [
             'can' => [
@@ -48,8 +46,9 @@ class RequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(HttpRequest $request) {
-        $entity = User::find( $request->id );
+    public function create(HttpRequest $request)
+    {
+        $entity = User::find($request->id);
         $financials = Auth::user()->financials()->get();
 
         return Inertia::render('Request/Create', [
@@ -67,7 +66,8 @@ class RequestController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreFormReqRequest $request) {
+    public function store(StoreFormReqRequest $request)
+    {
         $entity = Request::firstOrCreate(['id' => $request->id]);
         $entity->financial_id = $request->get('financial_id');
         $addresses = $request->get('addresses');
@@ -82,13 +82,13 @@ class RequestController extends Controller
             $addressEntity->city = $address['city'];
             $addressEntity->phone = $address['phone'];
             $addressEntity->address = $address['address'];
+            $addressEntity->hasExtendedQuestions = $address['hasExtendedQuestions'];
             $addressEntity->save();
-            if ( filter_var($address['hasExtendedQuestions'], FILTER_VALIDATE_BOOLEAN) ) {
-                foreach ($address['extendedQuestions'] as $key => $extendedQuestion) {
+            if (filter_var($address['hasExtendedQuestions'], FILTER_VALIDATE_BOOLEAN)) {
+                foreach ($address['extended_questions'] as $key => $extendedQuestion) {
                     $questionEntity = ExtendedQuestion::firstOrCreate(['id' => $extendedQuestion['id'] ?? null]);
-                    $questionEntity->name = $address['name'];
-                    $questionEntity->type = $address['type'];
-                    $questionEntity->request_id = $entity->id;
+                    $questionEntity->name = $extendedQuestion['name'];
+                    $questionEntity->type = $extendedQuestion['type'];
                     $questionEntity->address_id = $addressEntity->id;
                     $questionEntity->save();
                 }
@@ -104,16 +104,19 @@ class RequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
-        $entity = Financial::find($id);
-        $users = User::orderBy('id', 'desc')->where('email', '!=', 'esau.egs1@gmail.com')->get();
+    public function show($id)
+    {
+        $entity = Request::find($id)->with(['addresses' => function ($innerQuery) {
+            return $innerQuery->with(['extendedQuestions']);
+        }])->get();
+        $financials = Auth::user()->financials()->get();
 
         return Inertia::render('Request/Create', [
             'can' => [
                 'admin.requests.show' => Auth::user()->can('admin.requests.show'),
             ],
-            'entity' => $entity,
-            'users' => $users,
+            'entity' => $entity[0],
+            'financials' => $financials,
         ]);
     }
 
@@ -123,16 +126,10 @@ class RequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, StoreFormReqRequest $request) {
-        $entity = Financial::find(['id' => $id]);
-        $entity->name = $request->get('name');
-        $entity->address = $request->get('address');
-        $entity->bank = $request->get('bank');
-        $entity->description = $request->get('description');
-        $entity->user_id = $request->get('user_id');
+    public function edit($id, StoreFormReqRequest $request)
+    {
+        $entity = Request::find(['id' => $id]);
 
-        $entity->save();
-        
         return redirect()->route('request.index')->with('success', 'Editado correctamente');
     }
 
@@ -143,7 +140,8 @@ class RequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(HttpRequest $request, $id) {
+    public function update(HttpRequest $request, $id)
+    {
         //
     }
 
@@ -153,10 +151,42 @@ class RequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
-        Financial::destroy($id);
+    public function destroy($id)
+    {
+        Request::destroy($id);
 
         return redirect()->route('requests.index')->with('success', 'Borrado correctamente');
+    }
 
+    public function evaluate($id)
+    {
+        $entity = Request::with([
+            'financial' => function ($query) {
+                $query->with('user');
+            },
+            'addresses' => function ($query) {
+                $query->with('extendedQuestions');
+            },
+            'task',
+        ])->where('id', '=', $id)->get();
+        $promoters = User::whereHas("roles", function ($q) {
+            $q->where("name", "role.promoter");
+        })->get();
+
+        return Inertia::render('Request/Assign', [
+            'can' => [
+                'admin.requests.show' => Auth::user()->can('admin.requests.show'),
+            ],
+            'entity' => $entity[0],
+            'promoters' => $promoters,
+        ]);
+    }
+
+    public function assign(HttpRequest $request)
+    {
+        return dump($request);
+        $task = Tasks::create( $request->all() );
+
+        return redirect()->route('request.index')->with('success', 'Asignado correctamente');
     }
 }

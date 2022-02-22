@@ -11,7 +11,7 @@ class Request extends Model
 
     protected $fillable = [ 'status', 'financial_id', 'user_id',];
 
-    public function address() {
+    public function addresses() {
         return $this->hasMany(Address::class);
     }
 
@@ -20,7 +20,7 @@ class Request extends Model
     }
 
     public function user() {
-        return $this->hasOneThrough(User::class, Financial::class, 'user_id', 'id');
+        return $this->hasOneThrough(User::class, Financial::class, 'id', 'id', 'financial_id', 'user_id');
     }
     
     public function task() {

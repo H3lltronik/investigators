@@ -46,10 +46,9 @@
                             <el-table-column label="Operaciones">
                                 <template #default="scope">
                                     <div class="flex items-center gap-3">
-                                        <Link :href="route('request.show', {id: scope.row.id})">
-                                            <el-button size="small">Edit</el-button>
+                                        <Link :href="route('request.evaluate', {id: scope.row.id})">
+                                            <button size="small" class="bg-blue-400 text-white rounded-sm px-2 py-1 text-xs">Asignar</button>
                                         </Link>
-                                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
                                     </div>
                                 </template>
                             </el-table-column>

@@ -23,9 +23,9 @@
                         <pre>
                             {{$page.props.errors}}
                         </pre>-->
-                        <pre>
+                        <!-- <pre>
                             {{form}}
-                        </pre> 
+                        </pre>  -->
 
                         <el-form ref="form" :action="route('request.store')" :model="form" label-position="top" >
                             <div class="flex flex-col align-center justify-between mb-4">
@@ -113,6 +113,12 @@
         created () {
             if (this.entity) {
                 this.form = this.entity;
+                this.form.addresses = this.form.addresses.map(address => {
+                    return {
+                        ...address,
+                        hasExtendedQuestions: !!address.hasExtendedQuestions
+                    }
+                })
             }
         },
         methods: {
@@ -133,7 +139,7 @@
                     address: '',
                     phone: '',
                     hasExtendedQuestions: false,
-                    extendedQuestions: [
+                    extended_questions: [
                         {
                             type: '',
                             name: '',

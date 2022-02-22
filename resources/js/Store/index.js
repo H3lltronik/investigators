@@ -11,7 +11,7 @@ export const store = createStore({
                         address: '',
                         phone: '',
                         hasExtendedQuestions: false,
-                        extendedQuestions: []
+                        extended_questions: []
                     },
                 ],
             }
@@ -30,7 +30,7 @@ export const store = createStore({
             return state.requestForm.addresses.reduce((acc, item) => {
                 let total = acc;
                 if (item.hasExtendedQuestions)
-                    total += item.extendedQuestions.length;
+                    total += item.extended_questions.length;
 
                 return total;
             }, 0)

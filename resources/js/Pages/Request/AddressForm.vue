@@ -8,7 +8,7 @@
          <div class="basis-1/3 px-3">
             <el-form-item label="Numbre de empresa o persona fisica" :prop="`addresses[${id}].name`"
             :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                <el-input v-model="value.name" placeholder="Numbre de empresa o persona fisica" id="name" name="name">
+                <el-input :disabled="!editable" v-model="value.name" placeholder="Numbre de empresa o persona fisica" id="name" name="name">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
                     </template>
@@ -18,7 +18,7 @@
         <div class="basis-1/3 px-3">
             <el-form-item label="Ciudad" :prop="`addresses[${id}].city`"
             :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                <el-input v-model="value.city" placeholder="Ciudad" id="city" name="city">
+                <el-input :disabled="!editable" v-model="value.city" placeholder="Ciudad" id="city" name="city">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
                     </template>
@@ -28,7 +28,7 @@
         <div class="basis-1/3 px-3">
             <el-form-item label="Direccion" :prop="`addresses[${id}].address`"
             :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                <el-input v-model="value.address" placeholder="Direccion" id="address" name="address">
+                <el-input :disabled="!editable" v-model="value.address" placeholder="Direccion" id="address" name="address">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
                     </template>
@@ -38,7 +38,7 @@
         <div class="basis-1/3 px-3">
             <el-form-item label="Telefono" :prop="`addresses[${id}].phone`"
             :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                <el-input v-model="value.phone" placeholder="Telefono" id="phone" name="phone">
+                <el-input :disabled="!editable" v-model="value.phone" placeholder="Telefono" id="phone" name="phone">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
                     </template>
@@ -47,12 +47,12 @@
         </div>
         <div class="basis-1/3 px-3">
             <el-form-item label="Preguntas extendidas" :prop="`addresses[${id}].extended`">
-                <el-checkbox v-model="value.hasExtendedQuestions" @change="toggleExtendedQuestions"></el-checkbox>
+                <el-checkbox :disabled="!editable" v-model="value.hasExtendedQuestions" @change="toggleExtendedQuestions"></el-checkbox>
             </el-form-item>
         </div>
         <div class="basis-full px-3" >
             <el-form-item label="Notas" :prop="`addresses[${id}].notes`">
-                <el-input type="textarea" v-model="value.notes" placeholder="Notas" id="notes" name="notes">
+                <el-input type="textarea" :disabled="!editable" v-model="value.notes" placeholder="Notas" id="notes" name="notes">
                     <template #prefix>
                         <UserIcon class="h-4 w-4 m-auto"/>
                     </template>
@@ -63,28 +63,30 @@
             <div class="mb-3 flex items-center justify-between">
                 <span>Preguntas extendidas</span>
 
-                <button type="button" class="rounded-full bg-blue-400 p-1 hover:bg-blue-700 transition" @click="addExtendedQuestion">
+                <button type="button" class="rounded-full bg-blue-400 p-1 hover:bg-blue-700 transition" @click="addExtendedQuestion"
+                v-show="editable">
                     <PlusIcon class="h-4 w-4 m-auto text-white"/>
                 </button>
             </div>
-            <div class="flex items-center gap-5" v-for="(extendedQuestion, index) in value.extendedQuestions" :key="index">
-                <el-form-item label="Tipo de pregunta" :prop="`addresses[${id}].extendedQuestions[${index}].type`" class=""
+            <div class="flex items-center gap-5" v-for="(extendedQuestion, index) in value.extended_questions" :key="index">
+                <el-form-item label="Tipo de pregunta" :prop="`addresses[${id}].extended_questions[${index}].type`" class=""
                 :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                    <el-radio-group v-model="extendedQuestion.type">
+                    <el-radio-group :disabled="!editable" v-model="extendedQuestion.type">
                         <el-radio label="text">Texto</el-radio>
                         <el-radio label="picture">Fotografia</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="Nombre de pregunta" :prop="`addresses[${id}].extendedQuestions[${index}].name`" class="basis-1/3"
+                <el-form-item label="Nombre de pregunta" :prop="`addresses[${id}].extended_questions[${index}].name`" class="basis-1/3"
                 :rules="{required: true, message: 'Este campo es requerido', trigger: 'blur'}">
-                    <el-input v-model="extendedQuestion.name" placeholder="Nombre de pregunta">
+                    <el-input :disabled="!editable" v-model="extendedQuestion.name" placeholder="Nombre de pregunta">
                         <template #prefix>
                             <UserIcon class="h-4 w-4 m-auto"/>
                         </template>
                     </el-input>
                 </el-form-item>
 
-                <button type="button" class="rounded-full bg-red-700 p-1 hover:bg-red-400 transition" @click="removeExtendedQuestion(index)" v-show="canDeleteExtdQuestions">
+                <button type="button" class="rounded-full bg-red-700 p-1 hover:bg-red-400 transition" @click="removeExtendedQuestion(index)" 
+                v-show="canDeleteExtdQuestions && editable">
                     <TrashIcon class="h-4 w-4 m-auto text-white"/>
                 </button>
             </div>
@@ -109,7 +111,7 @@ export default {
         InformationCircleIcon,
         ClipboardCheckIcon,
     },
-    props: ['value', 'id', 'enableDelete'],
+    props: ['value', 'id', 'enableDelete', 'editable'],
     data () {
         return {
 
@@ -124,14 +126,14 @@ export default {
                 this.showMaxNotification()
                 return
             }
-            this.value.extendedQuestions.push({
+            this.value.extended_questions.push({
                 name: '',
                 type: 'text',
             })
         },
         removeExtendedQuestion (index) {
             if (!this.canDeleteExtdQuestions) return
-            this.value.extendedQuestions.splice(index, 1);
+            this.value.extended_questions.splice(index, 1);
         },
         toggleExtendedQuestions (value) {
             if (this.totalExtendedQuestionsQnt >= EXTENDED_QUESTIONS_PER_REQUEST) {
@@ -147,13 +149,13 @@ export default {
     },
     computed: {
         canDeleteExtdQuestions () {
-            return this.value.extendedQuestions.length > 1
+            return this.value.extended_questions.length > 1
         },
         totalExtendedQuestionsQnt () {
             return this.$store.getters.extendedQuestionsQnt
         }, 
         extendedQuestionsQnt () {
-            return this.value.extendedQuestions.length
+            return this.value.extended_questions.length
         }, 
     }
 }

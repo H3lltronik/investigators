@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('phone')->nullable()->default('');
             $table->string('city')->nullable()->default('');
             $table->string('address')->nullable()->default('');
+            $table->boolean('hasExtendedQuestions')->default(false);
             $table->string('status')->nullable()->default('PENDING');  
             $table->foreignId('request_id')->nullable()->references('id')->on('requests');
         });

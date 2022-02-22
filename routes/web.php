@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified', 'admin.access'], 'pre
     Route::resource('/users', UserController::class);
     Route::resource('/financials', FinancialController::class);
     Route::resource('/request', RequestController::class);
+    Route::get('/request/evaluate/{id}', [RequestController::class, 'evaluate'])->name('request.evaluate');
+    Route::post('/request/assign', [RequestController::class, 'assign'])->name('request.assign');
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
